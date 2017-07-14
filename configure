@@ -74,6 +74,26 @@ fi
 CFLAGS="${CPPFLAGS} ${CFLAGS}"
 CXXFLAGS="${CPPFLAGS} ${CXXFLAGS}"
 
+# workaround for broken wineg++ in WINE 1.4 (shipped e.g. with Ubuntu Precise)
+winebuild_output=$("${WINCXX}" -v -m32 /dev/zero)
+case "${winebuild_output}" in
+  *x86_64-linux-gnu/wine/libwinecrt0.a*)
+    WINCXX_X86_FLAGS="-nostartfiles -nodefaultlibs /usr/lib/i386-linux-gnu/wine/libwinecrt0.a -mwindows"
+    ;;
+  /usr/lib/lib64/wine/libwinecrt0.a*)
+    WINCXX_X86_FLAGS="-nostartfiles -nodefaultlibs /usr/lib/i386/wine/libwinecrt0.a -mwindows"
+    ;;
+  /opt/wine-devel/lib64/wine/libwinecrt0.a*)
+    WINCXX_X86_FLAGS="-nostartfiles -nodefaultlibs /opt/wine-devel/lib/wine/libwinecrt0.a -mwindows"
+    ;;
+  /opt/wine-stable/lib64/wine/libwinecrt0.a*)
+    WINCXX_X86_FLAGS="-nostartfiles -nodefaultlibs /opt/wine-stable/lib/wine/libwinecrt0.a -mwindows"
+    ;;
+  /opt/wine-staging/lib64/wine/libwinecrt0.a*)
+    WINCXX_X86_FLAGS="-nostartfiles -nodefaultlibs /opt/wine-staging/lib/wine/libwinecrt0.a -mwindows"
+    ;;
+esac
+
 cat >config.h <<EOF
 #ifndef CONFIG_H
 # define CONFIG_H
@@ -91,5 +111,6 @@ CC = $CC
 CXX = $CXX
 WINCC = $WINCC
 WINCXX = $WINCXX
+WINCXX_X86_FLAGS = $WINCXX_X86_FLAGS
 PREFIX = $PREFIX
 EOF

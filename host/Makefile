@@ -5,7 +5,7 @@ SRC    = host.cc
 all: vst-bridge-host-32.exe vst-bridge-host-64.exe
 
 vst-bridge-host-32.exe: $(SRC) ../common/common.h ../config.h
-	$(WINCXX) -m32 $(CXXFLAGS) $(SRC) -lpthread -lshell32 -lws2_32 -lX11 -o $@
+	$(WINCXX) $(WINCXX_X86_FLAGS) -m32 $(CXXFLAGS) $(SRC) -lpthread -lshell32 -lws2_32 -lX11 -o $@
 
 vst-bridge-host-64.exe: $(SRC) ../common/common.h ../config.h
 	$(WINCXX) -m64 $(CXXFLAGS) $(SRC) -lpthread -lshell32 -lws2_32 -lX11 -o $@
